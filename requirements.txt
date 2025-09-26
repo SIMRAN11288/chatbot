@@ -4,4 +4,4 @@ langchain-google-genai
 python-dotenv
 streamlit
 typing-extensions
-langgraph>=0.0.40
+langgraph==0.6.6
