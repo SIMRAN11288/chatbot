@@ -4,7 +4,15 @@ from typing import TypedDict
 from dotenv import load_dotenv
 from langchain_core.messages import BaseMessage,HumanMessage
 #from langgraph.checkpoint.memory import InMemorySaver   #previous to database
-from langgraph.checkpoint.sqlite import SqliteSaver
+try:
+    from langgraph.checkpoint.sqlite import SqliteSaver
+except ImportError:
+    try:
+        from langgraph.checkpoint.sqlite.sqlite import SqliteSaver
+    except ImportError:
+        from langgraph.checkpoint.memory import InMemorySaver as SqliteSaver
+
+#from langgraph.checkpoint.sqlite import SqliteSaver
 from langgraph.graph.message import add_messages
 from typing_extensions import Annotated
 import sqlite3
@@ -46,4 +54,5 @@ def retrieve_all_threads():  #this tells us number of unique threads in the prog
     all_threads=set()
     for checkpoint in check_pointer.list(None):
         all_threads.add(checkpoint.config['configurable']['thread_id'])
+
     return list(all_threads)
