@@ -86,11 +86,7 @@ st.session_state['name_thread'][active_session] = name_thread
 if name_thread != st.session_state['name_thread'].get(active_session, ""):
     st.session_state['name_thread'][active_session] = name_thread
 
-    # ✅ update backend config
-    check_pointer.put(
-        {"messages": load_conversation(active_session)},
-        config={"configurable": {"thread_id": active_session, "thread_name": name_thread}}
-    )
+    save_thread_name(active_session, name_thread, load_conversation(active_session))
 
 
 #---------------invoke---------------------------
@@ -118,6 +114,7 @@ if user_input:
         )
         
     st.session_state['messages'].append({'role':'assistant','content':ai_message})
+
 
 
 
