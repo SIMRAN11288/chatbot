@@ -49,6 +49,14 @@ def retrieve_all_threads():  #this tells us number of unique threads in the prog
         all_threads.add(checkpoint.config['configurable']['thread_id'])
 
     return list(all_threads)
+    
+def save_thread_name(thread_id, thread_name, messages=None):
+    if messages is None:
+        messages = []
+    check_pointer.put(
+        {"messages": messages},
+        config={"configurable": {"thread_id": thread_id, "thread_name": thread_name}}
+    )
 
 def retrieve_thread_names():
     thread_names = {}
@@ -57,6 +65,9 @@ def retrieve_thread_names():
         thread_name = checkpoint.config['configurable'].get('thread_name', str(thread_id)[:8])
         thread_names[thread_id] = thread_name
     return thread_names
+
+
+
 
 
 
