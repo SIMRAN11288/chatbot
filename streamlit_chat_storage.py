@@ -74,7 +74,7 @@ default_value=st.session_state['name_thread'].get(active_session,str(active_sess
 
 name_thread=st.text_input("Give a name to this convo",
         value=default_value,
-    key=f"name_{thread_ID}"
+    key=f"name_{active_session}"
    )
 st.session_state['name_thread'][active_session] = name_thread
 
@@ -103,5 +103,6 @@ if user_input:
         )
         
     st.session_state['messages'].append({'role':'assistant','content':ai_message})
+
 
 
