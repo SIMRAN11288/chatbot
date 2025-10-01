@@ -17,7 +17,14 @@ def reset_chat():
     thread_ID = generate_new_ID()
     st.session_state['thread_ID'] = thread_ID
     add_thread(thread_ID)
-    st.session_state['name_thread'][thread_ID] = f"Chat {len(st.session_state['chat_thread'])}"
+    
+    thread_name = f"Chat {len(st.session_state['chat_thread'])}"
+    st.session_state['name_thread'][thread_ID] = thread_name
+     # ✅ save into backend config
+    check_pointer.put(
+        {"messages": []},  # initial messages
+        config={"configurable": {"thread_id": thread_ID, "thread_name": thread_name}}
+    )
     st.session_state['messages'] = []
     
 def add_thread(thread_ID):
@@ -78,6 +85,16 @@ name_thread=st.text_input("Give a name to this convo",
    )
 st.session_state['name_thread'][active_session] = name_thread
 
+if name_thread != st.session_state['name_thread'].get(active_session, ""):
+    st.session_state['name_thread'][active_session] = name_thread
+
+    # ✅ update backend config
+    check_pointer.put(
+        {"messages": load_conversation(active_session)},
+        config={"configurable": {"thread_id": active_session, "thread_name": name_thread}}
+    )
+
+
 #---------------invoke---------------------------
 
 for messages in st.session_state['messages']:
@@ -103,6 +120,7 @@ if user_input:
         )
         
     st.session_state['messages'].append({'role':'assistant','content':ai_message})
+
 
 
 
