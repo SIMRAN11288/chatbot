@@ -54,7 +54,9 @@ def save_thread_name(thread_id, thread_name, messages=None):
     if messages is None:
         messages = []
     check_pointer.put(
-        {"messages": messages},
+        {"messages": messages,
+        "thread_name": thread_name
+        },
         config={"configurable": {"thread_id": thread_id, "thread_name": thread_name}}
     )
 
@@ -65,6 +67,7 @@ def retrieve_thread_names():
         thread_name = checkpoint.config['configurable'].get('thread_name', str(thread_id)[:8])
         thread_names[thread_id] = thread_name
     return thread_names
+
 
 
 
