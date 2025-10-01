@@ -1,5 +1,5 @@
 from langchain_core.messages import HumanMessage,AIMessage
-from langgraph_backend import chatbot,retrieve_all_threads,retrieve_thread_names
+from langgraph_backend import chatbot,retrieve_all_threads,retrieve_thread_names,save_thread_name
 import streamlit as st
 import uuid
 #------------------------utility functions--------------------------------------
@@ -20,11 +20,8 @@ def reset_chat():
     
     thread_name = f"Chat {len(st.session_state['chat_thread'])}"
     st.session_state['name_thread'][thread_ID] = thread_name
-     # ✅ save into backend config
-    check_pointer.put(
-        {"messages": []},  # initial messages
-        config={"configurable": {"thread_id": thread_ID, "thread_name": thread_name}}
-    )
+   # ✅ call backend helper
+    save_thread_name(thread_ID, thread_name, [])
     st.session_state['messages'] = []
     
 def add_thread(thread_ID):
@@ -121,6 +118,7 @@ if user_input:
         )
         
     st.session_state['messages'].append({'role':'assistant','content':ai_message})
+
 
 
 
