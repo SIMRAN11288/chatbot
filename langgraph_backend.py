@@ -57,16 +57,18 @@ def save_thread_name(thread_id, thread_name, messages=None):
         {"messages": messages,
         "thread_name": thread_name
         },
-        config={"configurable": {"thread_id": thread_id, "thread_name": thread_name}}
+        config={"configurable": {"thread_id": thread_id}}
     )
 
 def retrieve_thread_names():
     thread_names = {}
     for checkpoint in check_pointer.list(None):
         thread_id = checkpoint.config['configurable']['thread_id']
-        thread_name = checkpoint.config['configurable'].get('thread_name', str(thread_id)[:8])
+        # ✅ retrieve from state values
+        thread_name = checkpoint.values.get("thread_name", str(thread_id)[:8])
         thread_names[thread_id] = thread_name
     return thread_names
+
 
 
 
