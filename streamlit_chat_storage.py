@@ -46,10 +46,11 @@ if 'thread_ID' not in st.session_state:
 if 'chat_thread' not in st.session_state:
     st.session_state['chat_thread']=retrieve_all_threads()   #provides a list of unique 
                                                                    #threads
-add_thread(st.session_state['thread_ID'])
+add_thread(t.session_state['thread_ID'])
 
 if 'name_thread' not in st.session_state:
-    st.session_state['name_thread']={}
+    st.session_state['name_thread'] = retrieve_thread_names()
+
 #--------------------------side bars------------------------------------------
 
 st.sidebar.title('LangGraph History Con')
@@ -120,6 +121,7 @@ if user_input:
         )
         
     st.session_state['messages'].append({'role':'assistant','content':ai_message})
+
 
 
 
