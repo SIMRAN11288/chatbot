@@ -15,6 +15,7 @@ llm=ChatGoogleGenerativeAI(model="gemini-2.0-flash")
 class ChatState(TypedDict):
     #add on messages
     messages:Annotated[list[BaseMessage],add_messages]
+    thread_name:str
 
 def start_chat(state:ChatState) -> ChatState:
     message=state['messages']
@@ -68,6 +69,7 @@ def retrieve_thread_names():
         thread_name = checkpoint.values.get("thread_name", str(thread_id)[:8])
         thread_names[thread_id] = thread_name
     return thread_names
+
 
 
 
