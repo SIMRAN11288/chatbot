@@ -72,6 +72,22 @@ def retrieve_thread_names():
     return thread_names
         
 
+for checkpoint in check_pointer.list(None):
+    print("Checkpoint dir:", dir(checkpoint))
+    print("Config:", checkpoint.config)
+    try:
+        print("State:", checkpoint.state)
+    except AttributeError:
+        print("No .state")
+    try:
+        print("Values:", checkpoint.values)
+    except AttributeError:
+        print("No .values")
+    try:
+        print("Value:", checkpoint.value)
+    except AttributeError:
+        print("No .value")
+
 
 
 
