@@ -66,9 +66,11 @@ def retrieve_thread_names():
     for checkpoint in check_pointer.list(None):
         thread_id = checkpoint.config['configurable']['thread_id']
         # ✅ retrieve from state values
-        thread_name = checkpoint.values.get("thread_name", str(thread_id)[:8])
+        thread_name = checkpoint.state if hasattr(checkpoint,"state") else checkpoint.value
+        thread_name = state.get("thread_name", str(thread_id)[:8])
         thread_names[thread_id] = thread_name
     return thread_names
+        
 
 
 
