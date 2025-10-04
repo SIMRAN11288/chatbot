@@ -52,40 +52,39 @@ def retrieve_all_threads():  #this tells us number of unique threads in the prog
     return list(all_threads)
     
 def save_thread_name(thread_id, thread_name, messages=None):
-if messages is None:
-    messages = []
-
-state = {
-    "messages": messages,
-    "thread_name": thread_name
-}
-
-config = {
-    "configurable": {
-        "thread_id": thread_id,
+    if messages is None:
+        messages = []
+    
+    state = {
+        "messages": messages,
         "thread_name": thread_name
     }
-}
-
-check_pointer.put(state=state, config=config)
-
-
+    
+    config = {
+        "configurable": {
+            "thread_id": thread_id,
+            "thread_name": thread_name
+        }
+    }
+    
+    check_pointer.put(state=state, config=config)
 
 def retrieve_thread_names():
-thread_names = {}
-for checkpoint in check_pointer.list(None):
-    thread_id = checkpoint.config["configurable"]["thread_id"]
-
-    # Safely access state values
-    state_values = getattr(checkpoint, "state", None)
-    if state_values and hasattr(state_values, "values"):
-        thread_name = state_values.values.get("thread_name", str(thread_id)[:8])
-    else:
-        thread_name = str(thread_id)[:8]
-
-    thread_names[thread_id] = thread_name
-
-return thread_names
+    thread_names = {}
+    for checkpoint in check_pointer.list(None):
+        thread_id = checkpoint.config["configurable"]["thread_id"]
+        
+        # Safely access state values
+        state_values = getattr(checkpoint, "state", None)
+        if state_values and hasattr(state_values, "values"):
+            thread_name = state_values.values.get("thread_name", str(thread_id)[:8])
+        else:
+            thread_name = str(thread_id)[:8]
+        
+        thread_names[thread_id] = thread_name
+    
+    return thread_names
+    
 
 
 
