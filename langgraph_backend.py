@@ -44,12 +44,12 @@ chatbot=graph.compile(checkpointer=check_pointer)
 #     print("AI:", response['messages'][-1].content)
     
     #for database code
-def retrieve_all_threads():  #this tells us number of unique threads in the program
-    all_threads=set()
-    for checkpoint in check_pointer.list(None):
-        all_threads.add(checkpoint.config['configurable']['thread_id'])
-
+def retrieve_all_threads():    # this si to tell number of unique threads in the code
+    all_threads = set()
+    for _, metadata, _ in check_pointer.list(None):
+        all_threads.add(metadata["configurable"]["thread_id"])
     return list(all_threads)
+
     
 def save_thread_name(thread_id, thread_name, messages=None):
     if messages is None:
@@ -63,12 +63,11 @@ def save_thread_name(thread_id, thread_name, messages=None):
 
 def retrieve_thread_names():
     thread_names = {}
-    for checkpoint in check_pointer.list(None):
-        thread_id = checkpoint["metadata"]["configurable"]["thread_id"]
+    for checkpoint, metadata, versions in check_pointer.list(None):
+        thread_id = metadata["configurable"]["thread_id"]
 
-        state_values = checkpoint.get("checkpoint", {})
-        if isinstance(state_values, dict):
-            thread_name = state_values.get("thread_name", str(thread_id)[:8])
+        if isinstance(checkpoint, dict):
+            thread_name = checkpoint.get("thread_name", str(thread_id)[:8])
         else:
             thread_name = str(thread_id)[:8]
 
