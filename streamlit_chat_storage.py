@@ -13,7 +13,8 @@ def reset_chat():
     # add_thread(st.session_state['thread_ID'])
     # reset_thread_name(thread_ID)
     # st.session_state['messages']=[ ]
-    
+    if 'name_thread' not in st.session_state:
+        st.session_state['name_thread'] = {}
     thread_ID = generate_new_ID()
     st.session_state['thread_ID'] = thread_ID
     add_thread(thread_ID)
@@ -114,6 +115,7 @@ if user_input:
         )
         
     st.session_state['messages'].append({'role':'assistant','content':ai_message})
+
 
 
 
