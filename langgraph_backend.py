@@ -67,7 +67,7 @@ def save_thread_name(thread_id, thread_name, messages=None):
         }
     }
     
-    check_pointer.put(state:state, config:config)
+    check_pointer.put("state":state, "config":config)
 
 def retrieve_thread_names():
     thread_names = {}
@@ -85,6 +85,7 @@ def retrieve_thread_names():
     
     return thread_names
     
+
 
 
 
