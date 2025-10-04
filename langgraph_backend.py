@@ -64,19 +64,19 @@ def save_thread_name(thread_id, thread_name, messages=None):
 def retrieve_thread_names():
     thread_names = {}
     for checkpoint in check_pointer.list(None):
-        thread_id = checkpoint.config["configurable"]["thread_id"]
-        
-        # Safely access state values
-        state_values = getattr(checkpoint, "state", None)
-        if state_values and hasattr(state_values, "values"):
-            thread_name = state_values.values.get("thread_name", str(thread_id)[:8])
+        thread_id = checkpoint["metadata"]["configurable"]["thread_id"]
+
+        state_values = checkpoint.get("checkpoint", {})
+        if isinstance(state_values, dict):
+            thread_name = state_values.get("thread_name", str(thread_id)[:8])
         else:
             thread_name = str(thread_id)[:8]
-        
+
         thread_names[thread_id] = thread_name
-    
+
     return thread_names
-    
+
+
 
 
 
