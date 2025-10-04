@@ -54,20 +54,12 @@ def retrieve_all_threads():  #this tells us number of unique threads in the prog
 def save_thread_name(thread_id, thread_name, messages=None):
     if messages is None:
         messages = []
-    
-    state = {
-        "messages": messages,
-        "thread_name": thread_name
-    }
-    
-    config = {
-        "configurable": {
-            "thread_id": thread_id,
-            "thread_name": thread_name
-        }
-    }
-    
-    check_pointer.put({"state":state, "config":config})
+
+    state = {"messages": messages, "thread_name": thread_name}
+    metadata = {"configurable": {"thread_id": thread_id, "thread_name": thread_name}}
+
+    # new_versions can be empty if you don’t care about versioning
+    check_pointer.put(state, metadata, {})
 
 def retrieve_thread_names():
     thread_names = {}
@@ -85,6 +77,7 @@ def retrieve_thread_names():
     
     return thread_names
     
+
 
 
 
