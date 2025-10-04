@@ -106,19 +106,20 @@ if user_input:
     CONFIG = {'configurable': {'thread_id': st.session_state['thread_ID']}}
     
     with st.chat_message('assistant'):
-    response_chunks = []
-    for message_chunk, metadata in chatbot.stream(
-        {"messages": [HumanMessage(content=user_input)]},
-        config=CONFIG,
-        stream_mode="messages"
-    ):
-        if hasattr(message_chunk, "content"):
-            st.write(message_chunk.content, end="")
-            response_chunks.append(message_chunk.content)
-
-    ai_message = "".join(response_chunks)
+        response_chunks = []
+        for message_chunk, metadata in chatbot.stream(
+            {"messages": [HumanMessage(content=user_input)]},
+            config=CONFIG,
+            stream_mode="messages"
+        ):
+            if hasattr(message_chunk, "content"):
+                st.write(message_chunk.content, end="")
+                response_chunks.append(message_chunk.content)
+    
+        ai_message = "".join(response_chunks)
 
 st.session_state['messages'].append({'role': 'assistant', 'content': ai_message})
+
 
 
 
