@@ -113,12 +113,13 @@ if user_input:
             stream_mode="messages",
         ):
             if hasattr(message_chunk, "content"):
-                st.write(message_chunk.content, end="")
+                st.text(message_chunk.content)
                 response_chunks.append(message_chunk.content)
 
         ai_message = "".join(response_chunks)
 
     st.session_state["messages"].append({"role": "assistant", "content": ai_message})
+
 
 
 
