@@ -54,8 +54,9 @@ def retrieve_all_threads():    # this si to tell number of unique threads in the
 def save_thread_name(thread_id, thread_name, messages=None):
     if messages is None:
         messages = []
-    
+    checkpoint_id = str(uuid.uuid4())
     state = {
+        "id": checkpoint_id,  
         "messages": messages,
         "thread_name": thread_name
     }
@@ -64,7 +65,8 @@ def save_thread_name(thread_id, thread_name, messages=None):
         "configurable": {
             "thread_id": thread_id,
             "thread_name": thread_name,
-            "checkpoint_ns": "" 
+            "checkpoint_ns": "",
+            "checkpoint_id": checkpoint_id
         }
     }
     
@@ -92,6 +94,7 @@ def retrieve_thread_names():
         thread_names[thread_id] = thread_name
 
     return thread_names
+
 
 
 
