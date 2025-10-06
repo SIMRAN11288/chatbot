@@ -9,7 +9,7 @@ from langgraph.checkpoint.sqlite import SqliteSaver
 from langgraph.graph.message import add_messages
 from typing_extensions import Annotated
 import sqlite3
-
+import uuid
 load_dotenv()
 llm=ChatGoogleGenerativeAI(model="gemini-2.0-flash")
 class ChatState(TypedDict):
@@ -94,6 +94,7 @@ def retrieve_thread_names():
         thread_names[thread_id] = thread_name
 
     return thread_names
+
 
 
 
