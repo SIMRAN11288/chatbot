@@ -54,12 +54,29 @@ def retrieve_all_threads():    # this si to tell number of unique threads in the
 def save_thread_name(thread_id, thread_name, messages=None):
     if messages is None:
         messages = []
-
-    state = {"messages": messages, "thread_name": thread_name}
-    metadata = {"configurable": {"thread_id": thread_id, "thread_name": thread_name}}
-
-    # new_versions can be empty if you don’t care about versioning
-    check_pointer.put(state, metadata, {})
+    
+    state = {
+        "messages": messages,
+        "thread_name": thread_name
+    }
+    
+    config = {
+        "configurable": {
+            "thread_id": thread_id,
+            "thread_name": thread_name
+        }
+    }
+    
+    metadata = {
+        "configurable": {
+            "thread_id": thread_id,
+            "thread_name": thread_name
+        }
+    }
+    
+    # ✅ Correct argument order for SqliteSaver.put()
+    # put(config, checkpoint, metadata, new_versions)
+    check_pointer.put(config, state, metadata, {})
 
 def retrieve_thread_names():
     thread_names = {}
@@ -74,6 +91,7 @@ def retrieve_thread_names():
         thread_names[thread_id] = thread_name
 
     return thread_names
+
 
 
 
