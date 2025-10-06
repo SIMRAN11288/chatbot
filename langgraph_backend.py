@@ -63,7 +63,8 @@ def save_thread_name(thread_id, thread_name, messages=None):
     config = {
         "configurable": {
             "thread_id": thread_id,
-            "thread_name": thread_name
+            "thread_name": thread_name,
+            "checkpoint_ns": "" 
         }
     }
     
@@ -91,6 +92,7 @@ def retrieve_thread_names():
         thread_names[thread_id] = thread_name
 
     return thread_names
+
 
 
 
