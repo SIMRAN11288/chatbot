@@ -46,8 +46,15 @@ chatbot=graph.compile(checkpointer=check_pointer)
     #for database code
 def retrieve_all_threads():    # this si to tell number of unique threads in the code
     all_threads = set()
-    for _, metadata, _ in check_pointer.list(None):
-        all_threads.add(metadata["configurable"]["thread_id"])
+    
+    # ✅ iterate directly over items instead of unpacking
+    for item in check_pointer.list(None):
+        try:
+            thread_id = item.metadata["configurable"]["thread_id"]
+            all_threads.add(thread_id)
+        except Exception as e:
+            print("⚠️ Error reading thread:", e)
+    
     return list(all_threads)
 
     
@@ -83,19 +90,22 @@ def save_thread_name(thread_id, thread_name, messages=None):
 
 def retrieve_thread_names():
     thread_names = {}
-    for checkpoint, metadata, versions in check_pointer.list(None):
-        thread_id = metadata["configurable"]["thread_id"]
+    
+    for item in check_pointer.list(None):
+        try:
+            thread_id = item.metadata["configurable"]["thread_id"]
+            state_values = getattr(item, "checkpoint", {})
+    
+            if isinstance(state_values, dict):
+                thread_name = state_values.get("thread_name", str(thread_id)[:8])
+            else:
+                thread_name = str(thread_id)[:8]
+    
+            thread_names[thread_id] = thread_name
+        except Exception as e:
+            print("⚠️ Error reading thread name:", e)
 
-        if isinstance(checkpoint, dict):
-            thread_name = checkpoint.get("thread_name", str(thread_id)[:8])
-        else:
-            thread_name = str(thread_id)[:8]
-
-        thread_names[thread_id] = thread_name
-
-    return thread_names
-
-
+return thread_names
 
 
 
