@@ -47,15 +47,27 @@ chatbot=graph.compile(checkpointer=check_pointer)
 def retrieve_all_threads():    # this si to tell number of unique threads in the code
     all_threads = set()
     
-    # ✅ iterate directly over items instead of unpacking
     for item in check_pointer.list(None):
         try:
-            thread_id = item.metadata["configurable"]["thread_id"]
+            # ✅ Case 1: Older LangGraph — tuple form
+            if isinstance(item, tuple) and len(item) >= 2:
+                _, metadata, _ = item
+                thread_id = metadata["configurable"]["thread_id"]
+    
+            # ✅ Case 2: Newer LangGraph — object form
+            elif hasattr(item, "metadata"):
+                thread_id = item.metadata["configurable"]["thread_id"]
+    
+            else:
+                continue  # skip unknown forms
+    
             all_threads.add(thread_id)
+    
         except Exception as e:
-            print("⚠️ Error reading thread:", e)
+            print("⚠️ Error retrieving thread:", e)
     
     return list(all_threads)
+
 
     
 def save_thread_name(thread_id, thread_name, messages=None):
@@ -90,22 +102,32 @@ def save_thread_name(thread_id, thread_name, messages=None):
 
 def retrieve_thread_names():
     thread_names = {}
-    
+
     for item in check_pointer.list(None):
         try:
-            thread_id = item.metadata["configurable"]["thread_id"]
-            state_values = getattr(item, "checkpoint", {})
-    
-            if isinstance(state_values, dict):
-                thread_name = state_values.get("thread_name", str(thread_id)[:8])
-            else:
-                thread_name = str(thread_id)[:8]
-    
-            thread_names[thread_id] = thread_name
-        except Exception as e:
-            print("⚠️ Error reading thread name:", e)
+            # ✅ Handle tuple or object format
+            if isinstance(item, tuple) and len(item) >= 2:
+                checkpoint, metadata, _ = item
+                thread_id = metadata["configurable"]["thread_id"]
+                thread_name = checkpoint.get("thread_name", str(thread_id)[:8])
 
-return thread_names
+            elif hasattr(item, "metadata") and hasattr(item, "checkpoint"):
+                thread_id = item.metadata["configurable"]["thread_id"]
+                thread_name = getattr(item.checkpoint, "get", lambda k, d=None: d)(
+                    "thread_name", str(thread_id)[:8]
+                )
+
+            else:
+                continue
+
+            thread_names[thread_id] = thread_name
+
+        except Exception as e:
+            print("⚠️ Error retrieving thread name:", e)
+
+    return thread_names
+
+
 
 
 
