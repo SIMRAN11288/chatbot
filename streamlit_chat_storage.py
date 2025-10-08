@@ -1,7 +1,7 @@
 import os
 import streamlit as st
 
-DB_PATH = "/mount/src/chatbot/langgraph.db"  # change if your file is elsewhere
+DB_PATH = "/mount/src/chatbot/cahtbot.db"  # change if your file is elsewhere
 
 # Streamlit button to clear the old database
 if st.button("🧹 Reset LangGraph Database"):
@@ -134,6 +134,7 @@ if user_input:
         ai_message = "".join(response_chunks)
 
     st.session_state["messages"].append({"role": "assistant", "content": ai_message})
+
 
 
 
