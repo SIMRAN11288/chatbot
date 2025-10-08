@@ -1,3 +1,18 @@
+import os
+import streamlit as st
+
+DB_PATH = "/mount/src/chatbot/langgraph.db"  # change if your file is elsewhere
+
+# Streamlit button to clear the old database
+if st.button("🧹 Reset LangGraph Database"):
+    try:
+        if os.path.exists(DB_PATH):
+            os.remove(DB_PATH)
+            st.success("✅ LangGraph database deleted successfully. Please restart the app.")
+        else:
+            st.info("No database found — looks clean already.")
+    except Exception as e:
+        st.error(f"❌ Failed to delete database: {e}")
 from langchain_core.messages import HumanMessage,AIMessage
 from langgraph_backend import chatbot,retrieve_all_threads,retrieve_thread_names,save_thread_name
 import streamlit as st
@@ -119,6 +134,7 @@ if user_input:
         ai_message = "".join(response_chunks)
 
     st.session_state["messages"].append({"role": "assistant", "content": ai_message})
+
 
 
 
