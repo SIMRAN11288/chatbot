@@ -105,5 +105,8 @@ if user_input:
         
     st.session_state['messages'].append({'role':'assistant','content':ai_message})
 
+import os
+print("DB exists:", os.path.exists("cahtbot.db"))
+
 
 
