@@ -46,6 +46,16 @@ chatbot=graph.compile(checkpointer=check_pointer)
     
     #for database code
 #this tells us number of unique threads in the program
+def load_conversation(thread_id):
+    """Retrieve all messages for a given thread from LangGraph checkpoints."""
+    try:
+        state = chatbot.get_state(config={'configurable': {'thread_id': thread_id}})
+        messages = state.values.get('messages', [])
+        return messages
+    except Exception as e:
+        print(f"Error loading conversation for {thread_id}: {e}")
+        return []
+
 def retrieve_all_threads():
     all_threads = set()
     for item in check_pointer.list(None):
@@ -82,6 +92,7 @@ def retrieve_thread_names():
     """)
     cur.execute("SELECT thread_id, thread_name FROM chat_names")
     return {row[0]: row[1] for row in cur.fetchall()}
+
 
 
 
