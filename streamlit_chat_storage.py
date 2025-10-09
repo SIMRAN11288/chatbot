@@ -40,6 +40,19 @@ if 'thread_ID' not in st.session_state:
 if 'chat_thread' not in st.session_state:
     st.session_state['chat_thread']=retrieve_all_threads()   #provides a list of unique 
                                                                    #threads
+    # Automatically load messages for the active thread on startup
+active_thread = st.session_state['thread_ID']
+
+if not st.session_state['messages'] and active_thread in st.session_state['chat_thread']:
+    messages = load_conversation(active_thread)
+    temp_messages = []
+    for msg in messages:
+        if msg.__class__.__name__ == "HumanMessage":
+            temp_messages.append({"role": "user", "content": msg.content})
+        else:
+            temp_messages.append({"role": "assistant", "content": msg.content})
+    st.session_state['messages'] = temp_messages
+
 add_thread(st.session_state['thread_ID'])
 
 if 'name_thread' not in st.session_state:
@@ -107,6 +120,7 @@ if user_input:
 
 import os
 st.write("DB exists:", os.path.exists("cahtbot.db"))
+
 
 
 
