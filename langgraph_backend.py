@@ -19,7 +19,10 @@ def start_chat(state:ChatState) -> ChatState:
     message=state['messages']
     response=llm.invoke(message)
     return {'messages':state['messages'] + [response]}
-connection= sqlite3.connect(database='cahtbot.db',check_same_thread=False)  #database creation
+import os
+DB_PATH = os.path.join(os.path.dirname(__file__), "cahtbot.db")
+connection = sqlite3.connect(DB_PATH, check_same_thread=False)
+ #database creation
 check_pointer=SqliteSaver(conn=connection)
 graph=StateGraph(ChatState)
 
@@ -78,3 +81,4 @@ def retrieve_thread_names():
     cur.execute("SELECT thread_id, thread_name FROM chat_names")
     data = cur.fetchall()
     return {row[0]: row[1] for row in data}
+
