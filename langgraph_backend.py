@@ -46,4 +46,35 @@ def retrieve_all_threads():  #this tells us number of unique threads in the prog
     all_threads=set()
     for checkpoint in check_pointer.list(None):
         all_threads.add(checkpoint.config['configurable']['thread_id'])
+
     return list(all_threads)
+
+def save_thread_name(thread_id, thread_name):
+    """Store or update a chat's name in the same SQLite DB."""
+    cur = connection.cursor()
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS chat_names (
+            thread_id TEXT PRIMARY KEY,
+            thread_name TEXT
+        )
+    """)
+    cur.execute("""
+        INSERT INTO chat_names (thread_id, thread_name)
+        VALUES (?, ?)
+        ON CONFLICT(thread_id) DO UPDATE SET thread_name = excluded.thread_name
+    """, (str(thread_id), thread_name))
+    connection.commit()
+
+
+def retrieve_thread_names():
+    """Load all saved chat names as {thread_id: thread_name}."""
+    cur = connection.cursor()
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS chat_names (
+            thread_id TEXT PRIMARY KEY,
+            thread_name TEXT
+        )
+    """)
+    cur.execute("SELECT thread_id, thread_name FROM chat_names")
+    data = cur.fetchall()
+    return {row[0]: row[1] for row in data}
