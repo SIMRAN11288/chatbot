@@ -45,42 +45,34 @@ chatbot=graph.compile(checkpointer=check_pointer)
 #     print("AI:", response['messages'][-1].content)
     
     #for database code
-def retrieve_all_threads():    #this tells us number of unique threads in the program
-    """Retrieve all unique thread IDs from LangGraph checkpoints."""
+#this tells us number of unique threads in the program
+def retrieve_all_threads():
     all_threads = set()
-    
-    try:
-        for item in check_pointer.list(None):
-            if isinstance(item, tuple) and len(item) >= 2:
-                metadata = item[1]
-                thread_id = metadata.get("configurable", {}).get("thread_id")
-                if thread_id:
-                    all_threads.add(thread_id)
-    except Exception as e:
-        print("Error reading checkpoints:", e)
-    
+    for item in check_pointer.list(None):
+        if isinstance(item, tuple) and len(item) >= 2:
+            metadata = item[1]
+            thread_id = metadata.get("configurable", {}).get("thread_id")
+            if thread_id:
+                all_threads.add(thread_id)
     return list(all_threads)
-
+    
 
 def save_thread_name(thread_id, thread_name):
-    """Store or update a chat's name in the same SQLite DB."""
-    cur = connection.cursor()
-    cur.execute("""
-        CREATE TABLE IF NOT EXISTS chat_names (
-            thread_id TEXT PRIMARY KEY,
-            thread_name TEXT
-        )
-    """)
-    cur.execute("""
-        INSERT INTO chat_names (thread_id, thread_name)
-        VALUES (?, ?)
-        ON CONFLICT(thread_id) DO UPDATE SET thread_name = excluded.thread_name
-    """, (str(thread_id), thread_name))
-    connection.commit()
-
+     cur = connection.cursor()
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS chat_names (
+                thread_id TEXT PRIMARY KEY,
+                thread_name TEXT
+            )
+        """)
+        cur.execute("""
+            INSERT INTO chat_names (thread_id, thread_name)
+            VALUES (?, ?)
+            ON CONFLICT(thread_id) DO UPDATE SET thread_name = excluded.thread_name
+        """, (str(thread_id), thread_name))
+        connection.commit()
 
 def retrieve_thread_names():
-    """Load all saved chat names as {thread_id: thread_name}."""
     cur = connection.cursor()
     cur.execute("""
         CREATE TABLE IF NOT EXISTS chat_names (
@@ -89,9 +81,6 @@ def retrieve_thread_names():
         )
     """)
     cur.execute("SELECT thread_id, thread_name FROM chat_names")
-    data = cur.fetchall()
-    return {row[0]: row[1] for row in data}
-
-
+    return {row[0]: row[1] for row in cur.fetchall()}
 
 
