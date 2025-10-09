@@ -1,5 +1,6 @@
 from langchain_core.messages import HumanMessage,AIMessage
-from langgraph_backend import chatbot,retrieve_all_threads
+from langgraph_backend import chatbot, retrieve_all_threads, save_thread_name, retrieve_thread_names
+
 import streamlit as st
 import uuid
 #------------------------utility functions--------------------------------------
@@ -42,7 +43,7 @@ if 'chat_thread' not in st.session_state:
 add_thread(st.session_state['thread_ID'])
 
 if 'name_thread' not in st.session_state:
-    st.session_state['name_thread']={}
+    st.session_state['name_thread'] = retrieve_thread_names()
 #--------------------------side bars------------------------------------------
 
 st.sidebar.title('LangGraph History Con')
