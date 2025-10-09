@@ -58,19 +58,19 @@ def retrieve_all_threads():
     
 
 def save_thread_name(thread_id, thread_name):
-     cur = connection.cursor()
-        cur.execute("""
-            CREATE TABLE IF NOT EXISTS chat_names (
-                thread_id TEXT PRIMARY KEY,
-                thread_name TEXT
-            )
-        """)
-        cur.execute("""
-            INSERT INTO chat_names (thread_id, thread_name)
-            VALUES (?, ?)
-            ON CONFLICT(thread_id) DO UPDATE SET thread_name = excluded.thread_name
-        """, (str(thread_id), thread_name))
-        connection.commit()
+    cur = connection.cursor()
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS chat_names (
+            thread_id TEXT PRIMARY KEY,
+            thread_name TEXT
+        )
+    """)
+    cur.execute("""
+        INSERT INTO chat_names (thread_id, thread_name)
+        VALUES (?, ?)
+        ON CONFLICT(thread_id) DO UPDATE SET thread_name = excluded.thread_name
+    """, (str(thread_id), thread_name))
+    connection.commit()
 
 def retrieve_thread_names():
     cur = connection.cursor()
@@ -82,5 +82,6 @@ def retrieve_thread_names():
     """)
     cur.execute("SELECT thread_id, thread_name FROM chat_names")
     return {row[0]: row[1] for row in cur.fetchall()}
+
 
 
