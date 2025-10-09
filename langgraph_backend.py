@@ -46,7 +46,7 @@ chatbot=graph.compile(checkpointer=check_pointer)
     
     #for database code
 def retrieve_all_threads():    #this tells us number of unique threads in the program
- """Retrieve all unique thread IDs from LangGraph checkpoints."""
+    """Retrieve all unique thread IDs from LangGraph checkpoints."""
     all_threads = set()
     
     try:
@@ -91,6 +91,7 @@ def retrieve_thread_names():
     cur.execute("SELECT thread_id, thread_name FROM chat_names")
     data = cur.fetchall()
     return {row[0]: row[1] for row in data}
+
 
 
 
