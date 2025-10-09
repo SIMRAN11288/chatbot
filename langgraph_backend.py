@@ -45,12 +45,22 @@ chatbot=graph.compile(checkpointer=check_pointer)
 #     print("AI:", response['messages'][-1].content)
     
     #for database code
-def retrieve_all_threads():  #this tells us number of unique threads in the program
-    all_threads=set()
-    for checkpoint in check_pointer.list(None):
-        all_threads.add(checkpoint.config['configurable']['thread_id'])
-
+def retrieve_all_threads():    #this tells us number of unique threads in the program
+ """Retrieve all unique thread IDs from LangGraph checkpoints."""
+    all_threads = set()
+    
+    try:
+        for item in check_pointer.list(None):
+            if isinstance(item, tuple) and len(item) >= 2:
+                metadata = item[1]
+                thread_id = metadata.get("configurable", {}).get("thread_id")
+                if thread_id:
+                    all_threads.add(thread_id)
+    except Exception as e:
+        print("Error reading checkpoints:", e)
+    
     return list(all_threads)
+
 
 def save_thread_name(thread_id, thread_name):
     """Store or update a chat's name in the same SQLite DB."""
@@ -81,4 +91,5 @@ def retrieve_thread_names():
     cur.execute("SELECT thread_id, thread_name FROM chat_names")
     data = cur.fetchall()
     return {row[0]: row[1] for row in data}
+
 
